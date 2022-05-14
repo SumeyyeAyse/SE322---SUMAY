@@ -1,0 +1,80 @@
+package syst
+public
+	
+	system HMS
+	end HMS;
+	
+	system implementation HMS.with_processes
+		subcomponents
+			this_Blood_pressure_sensor: thread BloodPressureSensor;
+			this_Sp02_sensor: thread Sp02Sensor;
+			this_respiration_sensor: thread RespirationSensor;
+			this_acc_sensor: thread AccSensor;
+			this_controller : process Controller;
+		connections 
+				blood_conn: port this_Blood_pressure_sensor.tension ->this_controller.tension_in;
+				Sp02_conn: port this_Sp02_sensor.heart -> this_controller.heart_in;
+				respiration_conn: port this_respiration_sensor.respiration -> this_controller.respiration_in;
+				acc_conn: port this_acc_sensor.acc -> this_controller.acc_in;
+	end HMS.with_processes;
+	
+	process Controller
+		features 
+			tension_in : in event port;
+			heart_in: in event port;
+			respiration_in: in event port;
+			acc_in: in event port;
+				
+		
+	end Controller;
+	
+	process implementation Controller.with_threads
+	end Controller.with_threads;
+	
+	processor MainProcessor
+	end MainProcessor;
+	
+	processor implementation MainProcessor.impl
+	end MainProcessor.impl;			
+	
+	thread BloodPressureSensor
+		features 
+			tension: out event port;
+	end BloodPressureSensor;
+	
+	thread implementation BloodPressureSensor.impl
+	end BloodPressureSensor.impl;
+	
+	thread Sp02Sensor
+		features
+			heart: out event port;
+	end Sp02Sensor;
+	
+	thread implementation Sp02Sensor.impl
+	end Sp02Sensor.impl;
+	
+	thread RespirationSensor
+		features
+			respiration: out event port;
+	end RespirationSensor;
+	
+	thread implementation RespirationSensor.impl
+	end RespirationSensor.impl;
+	
+	thread AccSensor
+		features
+			acc: out event port;
+	end AccSensor;
+	
+	thread implementation AccSensor.impl
+	end AccSensor.impl;
+	
+	data LocationCapability
+		properties
+			Data_Model :: Data_Gather => Sensor;
+			Data_Model :: Base_Type => (classifier (Controller.impl));
+	end LocationCapability;
+	
+	
+	
+end syst;
